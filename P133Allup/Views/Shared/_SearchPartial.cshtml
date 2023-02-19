@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Product>
+
+    @foreach (Product product in Model)
+{
+    <li style="width:230%;background-color:white;display:flex;justify-content:flex-start">
+        <a style="display : flex; justify-content : space-between; align-items : center">
+            <img style="width:100px" src="~/assets/images/product/@product.MainImage" />
+            <p>@product.Title</p>
+            <span>$@(product.DiscountedPrice > 0 ? product.Price : product.DiscountedPrice)</span>
+        </a>
+    </li>
+}
+
