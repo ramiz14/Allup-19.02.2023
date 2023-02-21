@@ -183,5 +183,64 @@ namespace P133Allup.Controllers
             }
             return PartialView("_BasketProductTablePartial", basketVMs);
         }
+
+
+        public async Task<IActionResult> GetBasketForCart() 
+        {
+
+            string basket = HttpContext.Request.Cookies["basket"];
+            List<BasketVM> basketVMs = null;
+            if (string.IsNullOrEmpty(basket))
+            {
+                return BadRequest();
+            }
+            else
+            {
+                basketVMs = JsonConvert.DeserializeObject<List<BasketVM>>(basket);
+            }
+            foreach (BasketVM basketVM in basketVMs)
+            {
+                Product product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == basketVM.Id && p.IsDeleted == false);
+
+                if (product != null)
+                {
+                    basketVM.ExTax = product.ExTax;
+                    basketVM.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
+                    basketVM.Title = product.Title;
+                    basketVM.Image = product.MainImage;
+                }
+            }
+            return PartialView("_BasketPartial", basketVMs);
+        }
+
+        public async Task<IActionResult> GetBasketForBasketPg() 
+        {
+
+            string basket = HttpContext.Request.Cookies["basket"];
+            List<BasketVM> basketVMs = null;
+            if (string.IsNullOrEmpty(basket))
+            {
+                return BadRequest();
+            }
+            else
+            {
+                basketVMs = JsonConvert.DeserializeObject<List<BasketVM>>(basket);
+            }
+            foreach (BasketVM basketVM in basketVMs)
+            {
+                Product product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == basketVM.Id && p.IsDeleted == false);
+
+                if (product != null)
+                {
+                    basketVM.ExTax = product.ExTax;
+                    basketVM.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
+                    basketVM.Title = product.Title;
+                    basketVM.Image = product.MainImage;
+                }
+            }
+            return PartialView("_BasketProductTablePartial", basketVMs);
+        }
     }
 }

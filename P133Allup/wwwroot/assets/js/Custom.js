@@ -1,27 +1,42 @@
 ﻿$(document).ready(function () {
-    $('.product-delete').click(function (e) {
+    $(document).on('click', '.product-delete', function (e) {
         e.preventDefault
         let productId = $(this).attr('data-productId');
         fetch('/Basket/DeleteProduct/' + productId).then(res => {
             return res.text();
         }).then(data => {
             $('.productTable').html(data)
+            fetch('/Basket/GetBasketForCart/').then(res => {
+                return res.text();
+            }).then(data => {
+                if (data != null) {
+                    $('.header-cart').html(data)
+                }
+
+            })
         })
     })
 
-    $('.product-close').click(function (e) {
+    $(document).on('click', '.product-close', function (e) {
         e.preventDefault
         let productId = $(this).attr('data-productId');
         fetch('/Basket/CloseProduct/' + productId).then(res => {
             return res.text();
         }).then(data => {
-            console.log(data)
             if (data != null) {
                 $('.header-cart').html(data)
-            } 
+                fetch('/Basket/GetBasketForBasketPg/').then(res => {
+                    return res.text();
+                }).then(data => {
+                    $('.productTable').html(data)
+                })
+            }
 
         })
+
     })
+
+
     $(document).on('keyup', '.productCount', function () {
         let count = $(this).val();
         let productId = $(this).attr('data-productId');
